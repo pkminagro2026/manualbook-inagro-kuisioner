@@ -428,7 +428,7 @@ Column manager mengatur kolom yang ditampilkan. Pengaturan tidak mengubah data.
 | Pemilihan Soal | Mode soal | Soal Only, Kategori, Custom/Mix |
 | Pemilihan Soal | Kategori | Tampil untuk mode Kategori dan Custom |
 | Pemilihan Soal | Soal individual | Tampil untuk mode Soal Only dan Custom |
-| Identitas Kuesioner | Nama, Sekolah, Tgl Kunjungan | Tampilkan dan Wajib per field |
+| Identitas Kuesioner | Nama, Sekolah/Instansi, Tgl Kunjungan | Tampilkan dan Wajib per field |
 | Pengaturan | Status | Draft |
 | Pengaturan | Buka | Waktu mulai |
 | Pengaturan | Tutup | Waktu selesai |
@@ -514,12 +514,14 @@ Form publik dibuka melalui tautan `/q/{public_token}`. Responden tidak perlu log
 | Elemen | Fungsi |
 |---|---|
 | Nama | Identitas responden. Dapat disembunyikan atau tidak wajib |
-| Sekolah | Identitas sekolah. Dapat disembunyikan atau tidak wajib |
+| Sekolah/Instansi | Identitas sekolah/instansi. Dapat disembunyikan atau tidak wajib |
 | Tgl Kunjungan | Tanggal kunjungan. Dapat disembunyikan atau tidak wajib |
 | Next | Berpindah ke langkah berikutnya |
 | Kirim | Mengirim jawaban |
 
 Step Identitas dilewati jika ketiga field disembunyikan.
+
+Jika field wajib kosong, Next tetap dapat dilanjutkan. Validasi tetap berjalan dan error dicatat.
 
 ### 7.2 Soal rating
 
@@ -539,22 +541,32 @@ Soal radio menampilkan opsi teks. Pilih satu opsi, lalu klik **Next**.
 
 Halaman Review menampilkan identitas dan jawaban yang akan dikirim. Periksa seluruh nilai sebelum mengirim.
 
-### 7.5 Sukses
+![Review jawaban belum lengkap](publik/review-incomplete.png)
+
+Field wajib yang kosong ditampilkan merah dengan teks "(wajib diisi)".
+
+### 7.5 Validasi Kirim
+
+![Validasi kirim](publik/submit-incomplete.png)
+
+Jika tombol Kirim ditekan dan masih ada field wajib kosong, sistem menampilkan popup daftar isian yang belum lengkap. Respons tidak disimpan sampai semua field wajib terisi.
+
+### 7.6 Sukses
 
 ![Sukses submit](publik/submit-quiz-success.png)
 
 Setelah submit berhasil, sistem menampilkan pesan terima kasih. Respons tersimpan dengan status Submitted.
 
-### 7.6 Autosave dan device token
+### 7.7 Autosave dan device token
 
 - Draft dibuat saat field pertama diubah, bukan saat halaman dibuka.
 - Token draft disimpan pada session dan cookie browser per kuesioner.
 - Satu browser/perangkat tidak dapat mengirim dua kali pada kuesioner yang sama.
 - Kuesioner berbeda menggunakan token berbeda, sehingga perangkat yang sama dapat mengisi kuesioner lain.
-- Identitas, nama, sekolah, tanggal, dan IP tidak dipakai untuk memblokir duplikat.
+- Identitas, nama, sekolah/instansi, tanggal, dan IP tidak dipakai untuk memblokir duplikat.
 - Jika cookie dihapus atau browser diganti, pengiriman ulang masih mungkin terjadi.
 
-### 7.7 Kuesioner tidak dapat dibuka
+### 7.8 Kuesioner tidak dapat dibuka
 
 Akses ditolak jika:
 
@@ -587,12 +599,12 @@ Halaman Respons menampilkan respons draft dan submitted.
 |---|---|
 | Export Excel | Mengunduh XLSX wide |
 | Export Looker | Mengunduh XLSX 15 kolom |
-| Search | Mencari nama atau sekolah |
+| Search | Mencari nama atau sekolah/instansi |
 | Filter | Membuka panel filter |
 | Column manager | Mengatur kolom |
 | ID | ID respons |
 | Nama | Nama responden |
-| Sekolah | Sekolah responden |
+| Sekolah/Instansi | Sekolah/instansi responden |
 | Tgl Kunjungan | Tanggal kunjungan |
 | Rata-rata (Skor %) | Rata-rata skor jawaban numerik |
 | Opsi terpilih | Opsi radio/select yang dipilih |
@@ -614,12 +626,12 @@ Urutan default adalah ID terbaru di atas. Tabel menggunakan pagination.
 | Opsi | `Semua` dan daftar nilai `value_option` yang ada | Membatasi jawaban yang memiliki opsi tersebut |
 | Dari | Date picker | Batas awal `visit_date` |
 | Sampai | Date picker | Batas akhir `visit_date` |
-| Sekolah | `Semua` dan daftar `respondent_school` yang ada | Membatasi sekolah |
+| Sekolah/Instansi | `Semua` dan daftar `respondent_school` yang ada | Membatasi sekolah/instansi |
 | Deleted records | `Without deleted records`, `With deleted records`, `Only deleted records` | Menentukan data yang ditampilkan |
 
 Catatan:
 
-- Daftar **Opsi** dan **Sekolah** bersifat dinamis mengikuti data yang ada.
+- Daftar **Opsi** dan **Sekolah/Instansi** bersifat dinamis mengikuti data yang ada.
 - Filter tanggal mencakup batas awal dan batas akhir.
 - Export hanya mengambil data submitted dan selalu mengecualikan soft-deleted.
 
@@ -651,7 +663,7 @@ Nama kategori, label soal, dan skala pada detail menggunakan snapshot kuesioner.
 Edit respons hanya mengizinkan perubahan:
 
 - Nama
-- Sekolah.
+- Sekolah/Instansi.
 
 Field kuesioner, status, draft token, waktu submit, dan tanggal kunjungan tidak dapat diubah dari form edit.
 
@@ -889,6 +901,8 @@ Halaman Role tidak memiliki filter. Pencarian hanya menggunakan kolom Search ber
 | Create & create another | Menyimpan dan membuka form baru |
 | Cancel | Membatalkan |
 
+Permission yang tidak dipakai tidak ditampilkan pada Role Resource: Replicate, Reorder, Create Response, View untuk resource tanpa halaman View, serta Restore/ForceDelete Role.
+
 Permission **Resources** mencakup Kategori, Kuesioner, Soal, Respons, Role, dan Pengguna. Permission **Widgets** mencakup:
 
 ```text
@@ -988,7 +1002,7 @@ Periksa:
 - filter Kuesioner
 - filter Status
 - filter tanggal
-- filter Sekolah
+- filter Sekolah/Instansi
 - filter Opsi
 - data draft tidak ikut export
 - respons soft-deleted tidak ikut export.
@@ -1042,7 +1056,7 @@ Super Admin memiliki akses penuh melalui bypass.
 | Respons | Status | Draft, Submitted |
 | Respons | Opsi | Semua dan nilai opsi yang ada |
 | Respons | Dari/Sampai | Date picker |
-| Respons | Sekolah | Semua dan sekolah yang ada |
+| Respons | Sekolah/Instansi | Semua dan sekolah/instansi yang ada |
 | Respons | Deleted records | Without deleted records, With deleted records, Only deleted records |
 | Pengguna | Deleted records | Without deleted records, With deleted records, Only deleted records |
 | Dashboard Distribusi Opsi | Soal | Soal radio/select dari kuesioner terpilih |
@@ -1091,20 +1105,22 @@ Super Admin memiliki akses penuh melalui bypass.
 26. `publik/soal-tipe-rating.png`
 27. `publik/soal-tipe-radio.png`
 28. `publik/review-answer.png`
-29. `publik/submit-quiz-success.png`
-30. `respons/respons-table.png`
-31. `respons/respons-table-filter.png`
-32. `respons/respons-table-visibility-column.png`
-33. `respons/respons-view.png`
-34. `respons/respons-edit-delete.png`
-35. `respons/respons-edit-force-delete-restore.png`
-36. `pengguna/pengguna-table.png`
-37. `pengguna/pengguna-table-filter.png`
-38. `pengguna/pengguna-create.png`
-39. `pengguna/pengguna-edit-delete.png`
-40. `pengguna/pengguna-update-password.png`
-41. `pengguna/pengguna-edit-force-delete-restore.png`
-42. `role/role-table.png`
-43. `role/role-create.png`
-44. `role/role-edit-delete.png`
+29. `publik/review-incomplete.png`
+30. `publik/submit-incomplete.png`
+31. `publik/submit-quiz-success.png`
+32. `respons/respons-table.png`
+33. `respons/respons-table-filter.png`
+34. `respons/respons-table-visibility-column.png`
+35. `respons/respons-view.png`
+36. `respons/respons-edit-delete.png`
+37. `respons/respons-edit-force-delete-restore.png`
+38. `pengguna/pengguna-table.png`
+39. `pengguna/pengguna-table-filter.png`
+40. `pengguna/pengguna-create.png`
+41. `pengguna/pengguna-edit-delete.png`
+42. `pengguna/pengguna-update-password.png`
+43. `pengguna/pengguna-edit-force-delete-restore.png`
+44. `role/role-table.png`
+45. `role/role-create.png`
+46. `role/role-edit-delete.png`
 # manualbook-inagro-kuisioner

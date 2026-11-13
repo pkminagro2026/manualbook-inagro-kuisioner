@@ -186,7 +186,7 @@ Slug: pelatihan-inagro-a
 Deskripsi: Kuesioner latihan operasional jalur A.
 Mode: Kategori
 Kategori: Pelayanan, Produk, Kepuasan, Kebersihan
-Identitas: Nama, Sekolah, Tgl Kunjungan - tampil dan wajib
+Identitas: Nama, Sekolah/Instansi, Tgl Kunjungan - tampil dan wajib
 Buka: 2026-11-09 08:00
 Tutup: 2026-12-31 23:59
 Status: Draft
@@ -315,13 +315,13 @@ Tautan publik /q/{public_token}
 
 ```text
 Nama: Dewi Lestari
-Sekolah: SDN 01 Harapan
+Sekolah/Instansi: SDN 01 Harapan
 Tgl Kunjungan: 2026-11-10
 ```
 
 **Data cadangan**
 
-| Varian | Nama | Sekolah | Tgl Kunjungan |
+| Varian | Nama | Sekolah/Instansi | Tgl Kunjungan |
 |---|---|---|---|
 | B | Raka Pratama | SDN 02 Mekar | 2026-11-11 |
 | C | Nabila Putri | SMPN 03 Cahaya | 2026-11-12 |
@@ -402,6 +402,8 @@ pada setiap langkah.
 
 Halaman Review tampil.
 
+Validasi tetap berjalan; Next tetap dapat dilanjutkan walaupun soal wajib kosong.
+
 **Lanjut**
 
 Langkah 10.
@@ -432,9 +434,9 @@ Kirim
 
 **Hasil**
 
-Halaman sukses tampil.
+Jika masih ada soal wajib kosong, Review menampilkan baris merah dan Kirim menampilkan popup daftar isian. Respons belum tersimpan.
 
-Respons tersimpan dengan status Submitted.
+Jika semua wajib terisi, halaman sukses tampil dan respons tersimpan dengan status Submitted.
 
 **Lanjut**
 
@@ -488,12 +490,12 @@ Respons > View
 
 ```text
 Nama: Dewi Lestari Revisi
-Sekolah: SDN 01 Harapan Revisi
+Sekolah/Instansi: SDN 01 Harapan Revisi
 ```
 
 **Data cadangan**
 
-| Varian | Nama | Sekolah | Tgl Kunjungan | Opsi |
+| Varian | Nama | Sekolah/Instansi | Tgl Kunjungan | Opsi |
 |---|---|---|---|---|
 | B | Raka Pratama | SDN 02 Mekar | 2026-11-11 | YA |
 | C | Nabila Putri | SMPN 03 Cahaya | 2026-11-12 | BELUM TAU |
