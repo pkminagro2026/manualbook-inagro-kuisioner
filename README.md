@@ -64,6 +64,60 @@ Super Admin memiliki akses penuh melalui mekanisme bypass pada Gate. Role lain m
 | Soft delete | Data dipindahkan ke daftar terhapus dan masih dapat dipulihkan |
 | Force delete | Data dihapus permanen |
 | Restore | Mengembalikan data yang soft-deleted |
+| Resource | Unit data yang dikelola: Kategori, Soal, Kuesioner, Respons, Pengguna, dan Role |
+| Permission | Izin aksi pada resource, misalnya View, Create, Update, Delete, Restore, Force Delete |
+| Role | Kumpulan permission yang diberikan kepada pengguna |
+| Widget | Komponen ringkasan pada Dashboard |
+| Filter | Panel untuk membatasi data yang ditampilkan |
+| Column manager | Panel untuk menampilkan atau menyembunyikan kolom tabel |
+| Pagination | Navigasi halaman dan jumlah baris per halaman |
+| Mode soal | Cara memilih soal: Soal Only, Kategori, atau Custom/Mix |
+| Opsi | Pilihan jawaban pada soal radio/select |
+| Skala | Rentang nilai pada soal rating |
+| Rating | Tipe soal dengan pilihan angka |
+| Radio | Tipe soal dengan satu pilihan teks |
+| Guard Name | Nama guard autentikasi; umumnya `web` |
+| Select All | Memilih semua permission pada konteks yang aktif |
+| Bypass | Akses penuh Super Admin tanpa permission eksplisit |
+| Frozen | Status kuesioner yang isinya terkunci setelah publish |
+| Deleted records | Filter data aktif, soft-deleted, atau keduanya |
+| Apply filters | Menerapkan pilihan filter |
+| Apply columns | Menerapkan pilihan kolom |
+| Reset | Mengembalikan filter/kolom ke pengaturan awal |
+| Tampilkan / Wajib | Pengaturan visibilitas dan kewajiban field identitas |
+
+### 1.4 Konvensi Gambar
+
+- Akhiran `-1`, `-2`, `-3` adalah lanjutan tampilan dari atas ke bawah, bukan halaman berbeda.
+- Gambar admin menggunakan desktop penuh; URL, menu bar, dan dock terlihat.
+- Gambar form publik menggunakan emulasi perangkat 360×800 di dalam Chrome.
+- Angka dan nama pada gambar adalah data contoh.
+
+### 1.5 Istilah Teknis
+
+| Istilah | Arti |
+|---|---|
+| Slug | Versi ringkas judul untuk URL; harus unik |
+| Public token | UUID pada tautan publik `/q/{public_token}` |
+| Draft token | UUID yang mengikat draft respons ke browser/perangkat |
+| UUID | ID unik 36 karakter |
+| QR | Kode dua dimensi untuk tautan publik |
+| SVG | Format gambar vektor untuk unduhan QR |
+| XLSX | Format file Excel |
+| Wide export | Satu baris per respons; kolom soal melebar |
+| Long export | Satu baris per jawaban dengan 15 kolom Looker |
+| Looker | Tool BI yang membaca file export long |
+| Autosave | Penyimpanan draft otomatis saat field berubah |
+| Session | Penyimpanan sementara sisi server di browser |
+| Cookie | Penyimpanan kecil di browser untuk draft token |
+| `visit_date` | Tanggal kunjungan responden |
+| `created_at` | Waktu record dibuat |
+| `value_number` | Nilai numerik jawaban |
+| `value_option` | Nilai opsi jawaban radio/select |
+| `scale_min` / `scale_max` | Batas bawah/atas skala rating |
+| `opens_at` / `closes_at` | Waktu buka/tutup kuesioner |
+| `deleted_at` | Waktu data di-soft-delete |
+| `COALESCE` | Fungsi SQL yang memakai nilai pertama yang tidak kosong |
 
 ---
 
@@ -111,7 +165,11 @@ Hubungi Super Admin atau Admin untuk mengaktifkan akun.
 
 Dashboard menampilkan ringkasan data kuesioner.
 
-![Dashboard](dashboard/dashboard-initial.png)
+![Dashboard bagian 1](dashboard/dashboard-initial-1.png)
+![Dashboard bagian 2](dashboard/dashboard-initial-2.png)
+
+Gambar 1/2 menampilkan sidebar, Welcome, kartu statistik, Distribusi Opsi, dan Respons/Bulan.
+Gambar 2/2 menampilkan lanjutan grafik dan tabel Soal Terendah berdasarkan Skor %.
 
 ### 3.1 Fungsi elemen gambar
 
@@ -227,10 +285,10 @@ Kategori adalah kelompok soal. Satu kategori menjadi satu langkah pada form publ
 | Search | Mencari nama kategori |
 | Filter | Membuka filter data terhapus |
 | Column manager | Menampilkan atau menyembunyikan kolom |
-| Nama | Nama kategori |
+| Name | Nama kategori |
 | Soal | Jumlah soal pada kategori |
-| Urutan | Nilai urutan kategori |
-| Aktif | Status kategori |
+| Sort | Nilai urutan kategori |
+| Is active | Status kategori |
 | Edit | Membuka form edit |
 
 ### 4.2 Filter
@@ -250,6 +308,8 @@ Klik **Apply filters** untuk menerapkan dan **Reset** untuk mengembalikan filter
 ![Column manager kategori](kategori/kategori-table-visibility-column.png)
 
 Column manager digunakan untuk menampilkan atau menyembunyikan kolom. Pengaturan ini tidak mengubah data.
+
+Kolom yang tersedia dapat dicentang atau dilepas. Klik **Apply columns** untuk menerapkan dan **Reset** untuk kembali ke pengaturan awal.
 
 ### 4.4 Tambah kategori
 
@@ -272,6 +332,8 @@ Langkah:
 5. Atur **Urutan**.
 6. Aktifkan **Aktif**.
 7. Klik **Create**.
+
+**Create & create another** menyimpan data lalu membuka form kosong baru. **Cancel** kembali tanpa menyimpan.
 
 ### 4.5 Edit dan delete
 
@@ -312,8 +374,8 @@ Soal adalah pertanyaan yang dimasukkan ke kuesioner.
 | Kategori | Kategori soal atau Umum |
 | Tipe | Rating atau Radio |
 | Wajib | Status wajib dijawab |
-| Urutan | Urutan soal |
-| Aktif | Status soal |
+| Sort | Urutan soal |
+| Is active | Status soal |
 | Edit | Membuka form edit |
 
 ### 5.2 Filter
@@ -417,7 +479,13 @@ Column manager mengatur kolom yang ditampilkan. Pengaturan tidak mengubah data.
 
 ### 6.4 Tambah kuesioner
 
-![Tambah kuesioner](kuesioner/kuesioner-create.png)
+![Tambah kuesioner bagian 1](kuesioner/kuesioner-create-1.png)
+![Tambah kuesioner bagian 2](kuesioner/kuesioner-create-2.png)
+![Tambah kuesioner bagian 3](kuesioner/kuesioner-create-3.png)
+
+Gambar 1/3 menampilkan Informasi, Mode soal, Kategori, dan awal Soal individual.
+Gambar 2/3 menampilkan lanjutan Soal individual dan awal Identitas Kuesioner.
+Gambar 3/3 menampilkan Identitas Kuesioner, Pengaturan, serta tombol Create/Cancel.
 
 | Bagian | Field | Keterangan |
 |---|---|---|
@@ -441,7 +509,13 @@ Mode soal:
 
 ### 6.5 Edit dan delete
 
-![Edit dan delete kuesioner](kuesioner/kuesioner-edit-delete.png)
+![Edit dan delete kuesioner bagian 1](kuesioner/kuesioner-edit-delete-1.png)
+![Edit dan delete kuesioner bagian 2](kuesioner/kuesioner-edit-delete-2.png)
+![Edit dan delete kuesioner bagian 3](kuesioner/kuesioner-edit-delete-3.png)
+
+Gambar 1/3 menampilkan Informasi, Pemilihan Soal, dan awal Identitas Kuesioner.
+Gambar 2/3 menampilkan daftar soal dan identitas; contoh pada gambar sudah memiliki soal terpilih.
+Gambar 3/3 menampilkan identitas, Pengaturan, dan tombol Save changes/Cancel.
 
 Langkah edit:
 
@@ -793,7 +867,7 @@ Halaman Pengguna digunakan untuk mengelola akun admin.
 | New Pengguna | Membuka form tambah pengguna |
 | Search | Mencari nama atau email |
 | Filter | Membuka filter data terhapus |
-| Nama | Nama pengguna |
+| Name | Nama pengguna |
 | Email | Email login |
 | Role | Role pengguna |
 | Aktif | Status login |
@@ -808,7 +882,13 @@ Halaman Pengguna digunakan untuk mengelola akun admin.
 |---|---|---|
 | Deleted records | `Without deleted records`, `With deleted records`, `Only deleted records` | Menentukan data pengguna yang ditampilkan |
 
-### 10.3 Tambah pengguna
+### 10.3 Column manager
+
+![Column manager pengguna](pengguna/pengguna-table-visibility-column.png)
+
+Column manager menampilkan pilihan kolom tabel. **Apply columns** menerapkan pilihan, sedangkan **Reset** mengembalikan kolom ke pengaturan awal. Kolom **Last login at**, **Created at**, dan **Deleted at** tersembunyi secara default.
+
+### 10.4 Tambah pengguna
 
 ![Tambah pengguna](pengguna/pengguna-create.png)
 
@@ -822,7 +902,7 @@ Halaman Pengguna digunakan untuk mengelola akun admin.
 
 Pengguna dengan permission `assign_role` dapat memberikan role apa pun, termasuk `super_admin`.
 
-### 10.4 Edit dan delete
+### 10.5 Edit dan delete
 
 ![Edit dan delete pengguna](pengguna/pengguna-edit-delete.png)
 
@@ -830,7 +910,7 @@ Edit digunakan untuk mengubah nama, email, status aktif, dan role. Delete adalah
 
 Pengguna tidak dapat menonaktifkan atau menghapus akun sendiri. Super Admin terakhir yang aktif juga tidak dapat dinonaktifkan atau dihapus.
 
-### 10.5 Update password
+### 10.6 Update password
 
 ![Update password](pengguna/pengguna-update-password.png)
 
@@ -842,14 +922,14 @@ Langkah:
 
 Password langsung berlaku. Tidak ada email verifikasi atau reset password mandiri.
 
-### 10.6 Restore dan force delete
+### 10.7 Restore dan force delete
 
 ![Restore dan force delete pengguna](pengguna/pengguna-edit-force-delete-restore.png)
 
 - **Restore** mengembalikan pengguna soft-deleted.
 - **Force Delete** menghapus pengguna permanen.
 
-### 10.7 Login terakhir
+### 10.8 Login terakhir
 
 Waktu login terakhir diperbarui setiap login berhasil. Login gagal tidak mengubah nilai tersebut.
 
@@ -870,6 +950,7 @@ Halaman Role dikelola melalui Filament Shield.
 | Name | Nama role |
 | Guard Name | Guard autentikasi, umumnya `web` |
 | Permissions | Jumlah permission yang dimiliki role |
+| Updated At | Waktu terakhir role diubah |
 | Edit | Membuka halaman permission |
 | Delete | Menghapus role selain `super_admin` |
 
@@ -888,7 +969,15 @@ Halaman Role tidak memiliki filter. Pencarian hanya menggunakan kolom Search ber
 
 ### 11.2 Tambah role
 
-![Tambah role](role/role-create.png)
+![Tambah role bagian 1](role/role-create-1.png)
+![Tambah role bagian 2](role/role-create-2.png)
+![Tambah role bagian 3](role/role-create-3.png)
+
+Gambar 1/3 menampilkan Name, Guard Name, Select All, tab Resources/Widgets, serta grup Kategori, Kuesioner, dan awal Soal.
+Gambar 2/3 menampilkan grup Soal, Respons, Role, dan Pengguna.
+Gambar 3/3 menampilkan sisa permission Pengguna dan tombol Create/Create & create another/Cancel.
+
+Angka pada tab **Resources** dan **Widgets** adalah jumlah permission yang tersedia pada tab tersebut.
 
 | Elemen | Fungsi |
 |---|---|
@@ -916,7 +1005,13 @@ Jangan gunakan **Select All** untuk role operasional. Pilih hanya permission yan
 
 ### 11.3 Edit dan delete role
 
-![Edit dan delete role](role/role-edit-delete.png)
+![Edit dan delete role bagian 1](role/role-edit-delete-1.png)
+![Edit dan delete role bagian 2](role/role-edit-delete-2.png)
+![Edit dan delete role bagian 3](role/role-edit-delete-3.png)
+
+Gambar 1/3 menampilkan form Edit admin, tombol Delete, Name, Guard Name, Select All, serta permission Kategori dan Kuesioner yang sudah dicentang.
+Gambar 2/3 menampilkan permission Soal, Respons, Role, dan Pengguna.
+Gambar 3/3 menampilkan sisa permission dan tombol Save changes/Cancel.
 
 Langkah edit:
 
@@ -1077,50 +1172,17 @@ Super Admin memiliki akses penuh melalui bypass.
 
 ### 13.4 Daftar gambar
 
-1. `login/login.png`
-2. `login/login-salah-password.png`
-3. `dashboard/dashboard-initial.png`
-4. `dashboard/dashboard-filter-radio-question.png`
-5. `dashboard/dashboard-filter-range-question.png`
-6. `kategori/kategori-table.png`
-7. `kategori/kategori-table-filter.png`
-8. `kategori/kategori-table-visibility-column.png`
-9. `kategori/kategori-create.png`
-10. `kategori/kategori-edit-delete.png`
-11. `kategori/kategori-edit-force-delete-restore.png`
-12. `soal/soal-table.png`
-13. `soal/soal-table-filter.png`
-14. `soal/soal-table-visibility-column.png`
-15. `soal/soal-create.png`
-16. `soal/soal-edit-delete.png`
-17. `soal/soal-edit-force-delete-restore.png`
-18. `kuesioner/kuesioner-table.png`
-19. `kuesioner/kuesioner-table-filter.png`
-20. `kuesioner/kuesioner-table-visibility-column.png`
-21. `kuesioner/kuesioner-create.png`
-22. `kuesioner/kuesioner-edit-delete.png`
-23. `kuesioner/kuesioner-edit-force-delete-restore.png`
-24. `kuesioner/kuesioner-qrcode.png`
-25. `publik/data-diri.png`
-26. `publik/soal-tipe-rating.png`
-27. `publik/soal-tipe-radio.png`
-28. `publik/review-answer.png`
-29. `publik/review-incomplete.png`
-30. `publik/submit-incomplete.png`
-31. `publik/submit-quiz-success.png`
-32. `respons/respons-table.png`
-33. `respons/respons-table-filter.png`
-34. `respons/respons-table-visibility-column.png`
-35. `respons/respons-view.png`
-36. `respons/respons-edit-delete.png`
-37. `respons/respons-edit-force-delete-restore.png`
-38. `pengguna/pengguna-table.png`
-39. `pengguna/pengguna-table-filter.png`
-40. `pengguna/pengguna-create.png`
-41. `pengguna/pengguna-edit-delete.png`
-42. `pengguna/pengguna-update-password.png`
-43. `pengguna/pengguna-edit-force-delete-restore.png`
-44. `role/role-table.png`
-45. `role/role-create.png`
-46. `role/role-edit-delete.png`
+Total: **56 gambar**.
+
+| Kelompok | Jumlah | File |
+|---|---:|---|
+| Login | 2 | `login.png`, `login-salah-password.png` |
+| Dashboard | 4 | `dashboard-initial-1.png`, `dashboard-initial-2.png`, `dashboard-filter-radio-question.png`, `dashboard-filter-range-question.png` |
+| Kategori | 6 | `kategori-table.png`, `kategori-table-filter.png`, `kategori-table-visibility-column.png`, `kategori-create.png`, `kategori-edit-delete.png`, `kategori-edit-force-delete-restore.png` |
+| Soal | 6 | `soal-table.png`, `soal-table-filter.png`, `soal-table-visibility-column.png`, `soal-create.png`, `soal-edit-delete.png`, `soal-edit-force-delete-restore.png` |
+| Kuesioner | 11 | `kuesioner-table.png`, `kuesioner-table-filter.png`, `kuesioner-table-visibility-column.png`, `kuesioner-create-1.png`, `kuesioner-create-2.png`, `kuesioner-create-3.png`, `kuesioner-edit-delete-1.png`, `kuesioner-edit-delete-2.png`, `kuesioner-edit-delete-3.png`, `kuesioner-edit-force-delete-restore.png`, `kuesioner-qrcode.png` |
+| Publik | 7 | `data-diri.png`, `soal-tipe-rating.png`, `soal-tipe-radio.png`, `review-answer.png`, `review-incomplete.png`, `submit-incomplete.png`, `submit-quiz-success.png` |
+| Respons | 6 | `respons-table.png`, `respons-table-filter.png`, `respons-table-visibility-column.png`, `respons-view.png`, `respons-edit-delete.png`, `respons-edit-force-delete-restore.png` |
+| Pengguna | 7 | `pengguna-table.png`, `pengguna-table-filter.png`, `pengguna-table-visibility-column.png`, `pengguna-create.png`, `pengguna-edit-delete.png`, `pengguna-update-password.png`, `pengguna-edit-force-delete-restore.png` |
+| Role | 7 | `role-table.png`, `role-create-1.png`, `role-create-2.png`, `role-create-3.png`, `role-edit-delete-1.png`, `role-edit-delete-2.png`, `role-edit-delete-3.png` |
 # manualbook-inagro-kuisioner
